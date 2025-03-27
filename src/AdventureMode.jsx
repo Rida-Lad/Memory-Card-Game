@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { RefreshCw, Trophy } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { RefreshCw, Trophy, Home } from 'lucide-react';
 
 const MemoryCardAdventure = () => {
   // Game Configuration
@@ -30,7 +31,8 @@ const MemoryCardAdventure = () => {
     cards: [],
     selectedCards: [],
     matchedPairs: 0,
-    isInitialized: false
+    isInitialized: false,
+    showCompletionModal: false
   });
 
   const [isLandscape, setIsLandscape] = useState(false);
@@ -74,7 +76,8 @@ const MemoryCardAdventure = () => {
       ...prev,
       cards: shuffledCards,
       selectedCards: [],
-      matchedPairs: 0
+      matchedPairs: 0,
+      showCompletionModal: false
     }));
   };
 
@@ -96,7 +99,7 @@ const MemoryCardAdventure = () => {
 
   // Game Logic
   const handleCardSelect = (card) => {
-    if (gameState.selectedCards.length === 2 || card.matched) return;
+    if (gameState.selectedCards.length === 2 || card.matched || gameState.showCompletionModal) return;
     if (window.navigator.vibrate) window.navigator.vibrate(10);
 
     const newSelectedCards = [...gameState.selectedCards, card];
@@ -136,6 +139,8 @@ const MemoryCardAdventure = () => {
               currentLevel: prev.currentLevel + 1
             }));
           }, 1500);
+        } else {
+          newState.showCompletionModal = true;
         }
       }
     }
@@ -155,7 +160,8 @@ const MemoryCardAdventure = () => {
       cards: [],
       selectedCards: [],
       matchedPairs: 0,
-      isInitialized: true
+      isInitialized: true,
+      showCompletionModal: false
     });
   };
 
@@ -199,16 +205,22 @@ const MemoryCardAdventure = () => {
           </div>
         )}
         
-        <div className="bg-gray-900 bg-opacity-80 rounded-xl p-4 sm:p-6 shadow-2xl backdrop-blur-md border border-gray-700 border-opacity-50">
-          {/* Game Header */}
-          <h1 className="text-3xl font-bold text-center mb-4 sm:mb-6 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500 animate-gradient-x">
-            Adventure Mode
-          </h1>
+        <div className="bg-gray-900/80 rounded-xl p-4 sm:p-6 shadow-2xl backdrop-blur-md border border-gray-700/50">
+          {/* Header with Back Button */}
+          <div className="flex justify-between items-center mb-6">
+            <Link to="/" className="text-purple-400 hover:text-pink-400 transition-colors flex items-center">
+              <Home className="w-5 h-5 mr-1" /> Home
+            </Link>
+            <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500 animate-gradient-x">
+              Memory Adventure
+            </h1>
+            <div className="w-8"></div> {/* Spacer for alignment */}
+          </div>
           
           {/* Progress Bar */}
-          <div className="w-full bg-gray-800 bg-opacity-70 h-8 sm:h-10 rounded-full mb-4 sm:mb-6 overflow-hidden relative">
+          <div className="w-full bg-gray-800/70 h-8 sm:h-10 rounded-full mb-4 sm:mb-6 overflow-hidden relative">
             <div 
-              className="bg-gradient-to-r from-purple-600 to-pink-600 h-full transition-all duration-500 shadow-lg shadow-purple-500/30"
+              className="bg-gradient-to-r from-purple-600/90 to-pink-600/90 h-full transition-all duration-500 shadow-lg shadow-purple-500/30"
               style={{ width: `${(gameState.currentLevel / 5) * 100}%` }}
             />
             <div className="absolute inset-0 flex items-center justify-center">
@@ -240,12 +252,12 @@ const MemoryCardAdventure = () => {
                   w-full aspect-square border-2 rounded-lg cursor-pointer transition-all duration-300 
                   flex items-center justify-center ${getCardSize()} sm:text-4xl
                   ${card.matched ? 
-                    'bg-purple-800 opacity-50 border-purple-400 shadow-inner shadow-purple-400/30' : 
-                    'bg-gray-800 hover:bg-gray-700 border-gray-600 hover:border-purple-400'
+                    'bg-purple-800/50 border-purple-400/70 shadow-inner shadow-purple-400/30' : 
+                    'bg-gray-800/70 hover:bg-gray-700/80 border-gray-600/70 hover:border-purple-400/70'
                   }
                   ${gameState.selectedCards.includes(card) ? 
-                    'border-purple-500 shadow-lg shadow-purple-500/50 scale-105' : 
-                    'border-gray-700'
+                    'border-purple-500/80 shadow-lg shadow-purple-500/50 scale-105' : 
+                    'border-gray-700/70'
                   }
                   ${(gameState.selectedCards.includes(card) || card.matched) ? '' : 'opacity-80 hover:opacity-100'}
                   min-w-[50px] sm:min-w-[60px] transform hover:scale-105 transition-transform
@@ -266,24 +278,17 @@ const MemoryCardAdventure = () => {
           <div className="flex flex-col sm:flex-row justify-center items-center mt-4 sm:mt-6 gap-3 sm:gap-4">
             <button 
               onClick={resetLevel}
-              className="bg-purple-700 hover:bg-purple-600 text-white px-4 py-2 rounded-full flex items-center text-sm sm:text-base transition-all hover:shadow-lg hover:shadow-purple-500/30 hover:-translate-y-0.5"
+              className="bg-purple-700/90 hover:bg-purple-600/90 text-white px-4 py-2 rounded-full flex items-center text-sm sm:text-base transition-all hover:shadow-lg hover:shadow-purple-500/30 hover:-translate-y-0.5"
             >
               <RefreshCw className="mr-2 h-4 w-4 sm:h-5 sm:w-5" /> Reset Level
             </button>
             
             <button 
               onClick={resetProgress}
-              className="bg-red-700 hover:bg-red-600 text-white px-4 py-2 rounded-full text-sm sm:text-base transition-all hover:shadow-lg hover:shadow-red-500/30 hover:-translate-y-0.5"
+              className="bg-red-700/90 hover:bg-red-600/90 text-white px-4 py-2 rounded-full text-sm sm:text-base transition-all hover:shadow-lg hover:shadow-red-500/30 hover:-translate-y-0.5"
             >
               Reset All Progress
             </button>
-            
-            {gameState.currentLevel === 5 && gameState.levelsCompleted.includes(5) && (
-              <div className="flex items-center text-green-400 text-sm sm:text-base animate-bounce">
-                <Trophy className="mr-2 h-4 w-4 sm:h-5 sm:w-5" /> 
-                Adventure Completed!
-              </div>
-            )}
           </div>
           
           {/* Completed Levels */}
@@ -297,8 +302,8 @@ const MemoryCardAdventure = () => {
                     w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center
                     text-sm sm:text-base transition-all duration-300
                     ${gameState.levelsCompleted.includes(level.level) 
-                      ? 'bg-gradient-to-br from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-500/30 scale-110' 
-                      : 'bg-gray-800 text-gray-500'
+                      ? 'bg-gradient-to-br from-purple-600/90 to-pink-600/90 text-white shadow-lg shadow-purple-500/30 scale-110' 
+                      : 'bg-gray-800/70 text-gray-500'
                     }
                     hover:scale-110
                   `}
@@ -310,6 +315,38 @@ const MemoryCardAdventure = () => {
           </div>
         </div>
       </div>
+
+      {/* Completion Modal */}
+      {gameState.showCompletionModal && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-20 backdrop-blur-sm">
+          <div className="bg-gradient-to-br from-purple-900/90 to-gray-900/90 p-6 rounded-xl max-w-sm w-full border-2 border-purple-500/50 shadow-2xl backdrop-blur-md">
+            <div className="text-center mb-6">
+              <Trophy className="mx-auto h-16 w-16 text-yellow-400 mb-4" />
+              <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-pink-300 mb-2">
+                Adventure Complete!
+              </h2>
+              <p className="text-purple-200">You've mastered all levels!</p>
+            </div>
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={() => {
+                  setGameState(prev => ({ ...prev, showCompletionModal: false }));
+                  resetProgress();
+                }}
+                className="w-full py-3 bg-gradient-to-r from-purple-600/90 to-pink-600/90 hover:from-purple-500/90 hover:to-pink-500/90 rounded-lg text-white font-bold transition-all hover:shadow-lg hover:shadow-purple-500/30"
+              >
+                Play Again
+              </button>
+              <Link 
+                to="/" 
+                className="w-full py-3 bg-gray-700/90 hover:bg-gray-600/90 rounded-lg text-white font-bold transition-all text-center"
+              >
+                Return to Home
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Global Styles */}
       <style jsx global>{`

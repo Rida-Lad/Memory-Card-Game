@@ -39,9 +39,10 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-gray-900 text-white overflow-hidden relative" style={{ fontFamily: "'Atma', cursive" }}>
-        {/* Space background */}
-        <div className="fixed inset-0 overflow-hidden z-0 pointer-events-none bg-gray-900/80">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white overflow-hidden relative" style={{ fontFamily: "'Atma', cursive" }}>
+        {/* Cosmic Radial Background */}
+        <div className="fixed inset-0 overflow-hidden z-0 pointer-events-none">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-900/70 via-gray-900/90 to-gray-900"></div>
           {stars}
           <style jsx global>{`
             @font-face {
@@ -62,12 +63,29 @@ function App() {
               will-change: transform, opacity;
             }
             .radial-title {
-              background: radial-gradient(circle at center, #7e22ce 0%, #a855f7 40%, #ec4899 80%, #d946ef 100%);
+              background: radial-gradient(circle at center, 
+                #7e22ce 0%, 
+                #a855f7 30%, 
+                #d946ef 60%, 
+                #ec4899 80%, 
+                #a855f7 100%);
               -webkit-background-clip: text;
               background-clip: text;
+              text-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
             }
             .radial-button {
-              background: radial-gradient(circle at 75% 25%, #7e22ce 0%, #a855f7 50%, #ec4899 100%);
+              background: radial-gradient(circle at 75% 25%, 
+                #7e22ce 0%, 
+                #a855f7 40%, 
+                #d946ef 80%);
+              box-shadow: 0 4px 20px -5px rgba(126, 34, 206, 0.5),
+                          inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            }
+            .radial-button-hover {
+              background: radial-gradient(circle at 75% 25%, 
+                #7e22ce 0%, 
+                #a855f7 50%, 
+                #ec4899 100%);
             }
           `}</style>
         </div>
@@ -75,16 +93,17 @@ function App() {
         <Routes>
           <Route path="/" element={
             <div className="flex flex-col items-center justify-center min-h-screen gap-10 p-6 relative z-10">
-              {/* Radial Gradient Title */}
+              {/* Cosmic Radial Title */}
               <div className="text-center">
                 <h1 className="text-5xl md:text-7xl font-bold mb-2 tracking-wider 
                               radial-title text-transparent
-                              drop-shadow-[0_0_12px_rgba(168,85,247,0.8)]">
+                              transition-all duration-1000 hover:text-shadow-[0_0_20px_rgba(168,85,247,0.5)]">
                   MEMORY CARD GAME
                 </h1>
                 <h2 className="text-xl md:text-2xl font-medium 
                               bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent
-                              animate-gradient-text">
+                              animate-gradient-text
+                              bg-gray-900/50 px-4 py-2 rounded-full backdrop-blur-sm">
                   by RIDA LADIB
                 </h2>
                 <style jsx>{`
@@ -99,7 +118,7 @@ function App() {
                 `}</style>
               </div>
               
-              {/* Radial Gradient Buttons with Gray-900 Base */}
+              {/* Cosmic Radial Buttons */}
               <div className="flex flex-col gap-5 w-full max-w-md">
                 <GameModeButton 
                   to="/adventure" 
@@ -126,19 +145,23 @@ function App() {
   );
 }
 
-// Radial Gradient Button Component with Gray-900
+// Cosmic Radial Button Component
 const GameModeButton = ({ to, title }) => (
   <Link 
     to={to}
     className={`relative p-5 text-center text-white font-bold text-xl tracking-wider
-              transition-all duration-300 hover:scale-105 rounded-full
-              shadow-lg hover:shadow-purple-500/50 overflow-hidden
-              border border-gray-700
-              bg-gray-900/80 backdrop-blur-sm
-              radial-button`}
+              transition-all duration-500 hover:scale-105 rounded-full
+              overflow-hidden border border-gray-700/50
+              radial-button hover:radial-button-hover
+              group`}
   >
-    <span className="relative z-10 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">{title}</span>
-    <div className="absolute inset-0 bg-white/0 hover:bg-white/5 transition-all duration-300 rounded-full" />
+    <span className="relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] 
+                    group-hover:drop-shadow-[0_2px_8px_rgba(168,85,247,0.6)]">
+      {title}
+    </span>
+    <div className="absolute inset-0 bg-gradient-to-b from-white/0 via-white/5 to-white/0 
+                  opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full" />
+    <div className="absolute inset-0 bg-gray-900/30 backdrop-blur-sm rounded-full" />
   </Link>
 );
 

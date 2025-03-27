@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const emojiPairs = ["🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🐻", "🐼"];
 const initialCards = [
@@ -27,10 +28,8 @@ function VsBot() {
           return;
         }
 
-        // Consistent medium-difficulty strategy
+        // Bot logic remains the same
         let firstChoice, secondChoice;
-
-        // 60% chance to use memory if available
         if (Math.random() < 0.4 && botMemory.length > 0) {
           const memoryMatch = botMemory[Math.floor(Math.random() * botMemory.length)];
           firstChoice = availableCards.find(card => card.value === memoryMatch.value && card.id !== memoryMatch.id)
@@ -39,9 +38,6 @@ function VsBot() {
           firstChoice = availableCards[Math.floor(Math.random() * availableCards.length)];
         }
 
-        // For second choice:
-        // - If first choice was from memory, try to match it (70% chance)
-        // - Otherwise random (but avoid recently seen mismatches)
         if (botMemory.some(mem => mem.id === firstChoice.id) && Math.random() < 0.7) {
           secondChoice = availableCards.find(card =>
             card.id !== firstChoice.id && card.value === firstChoice.value
@@ -52,15 +48,12 @@ function VsBot() {
           const recentlySeenMismatches = botMemory.filter(mem =>
             mem.value !== firstChoice.value
           );
-
-          // 40% chance to avoid recently seen mismatches
           if (recentlySeenMismatches.length > 0 && Math.random() < 0.4) {
             secondChoice = availableCards.find(card =>
               card.id !== firstChoice.id &&
               !recentlySeenMismatches.some(mem => mem.value === card.value)
             );
           }
-
           if (!secondChoice) {
             secondChoice = availableCards.find(card => card.id !== firstChoice.id);
           }
@@ -119,7 +112,6 @@ function VsBot() {
         ));
       }
     } else if (isPlayerTurn) {
-      // Only add to bot memory if player failed to match
       setBotMemory(prev => [...prev, ...selected]);
     }
 
@@ -141,13 +133,19 @@ function VsBot() {
 
   return (
     <div style={{ fontFamily: 'Atma' }} className="min-h-screen flex items-center justify-center p-4 relative">
-      {/* Main game container */}
+      {/* Main game container with transparency */}
       <div className="w-full max-w-md mx-auto">
         <div className="bg-gray-900 bg-opacity-80 rounded-xl p-4 sm:p-6 shadow-2xl backdrop-blur-md border border-gray-700 border-opacity-50">
-          {/* Title with gradient text */}
-          <h1 className="text-3xl font-bold mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500 animate-gradient-x">
-            Animal Memory Match
-          </h1>
+          {/* Header with back button */}
+          <div className="flex justify-between items-center mb-6">
+            <Link to="/" className="text-purple-400 hover:text-pink-400 transition-colors">
+              ← Back 
+            </Link>
+            <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500 animate-gradient-x">
+              Memory Match Vs Bot
+            </h1>
+            <div className="w-8"></div> {/* Spacer for alignment */}
+          </div>
 
           {/* Score display */}
           <div className="flex justify-between mb-6">
@@ -166,7 +164,7 @@ function VsBot() {
             </div>
           </div>
 
-          {/* Card grid */}
+          {/* Card grid with transparent cards */}
           <div className="grid grid-cols-4 gap-3 mb-6">
             {cards.map((card) => (
               <button
@@ -177,7 +175,7 @@ function VsBot() {
                   ${!card.visible ? "invisible" :
                     flippedCards.some(c => c.id === card.id) ?
                       "bg-purple-300 text-black shadow-lg shadow-purple-300/50 scale-105" :
-                      "bg-purple-900 text-white hover:bg-purple-800 border-2 border-purple-700 hover:border-purple-500"
+                      "bg-purple-900/80 text-white hover:bg-purple-800/80 border-2 border-purple-700/50 hover:border-purple-500/70"
                   }
                   ${!card.visible ? "" : "shadow-lg"}
                   transform hover:scale-105 active:scale-95
@@ -189,10 +187,10 @@ function VsBot() {
                   flippedCards.some(c => c.id === card.id) ? (
                     <>
                       <span className="relative z-10 drop-shadow-md">{card.value}</span>
-                      <div className="absolute inset-0 bg-white opacity-20 rounded-xl"></div>
+                      <div className="absolute inset-0 bg-white/20 rounded-xl"></div>
                     </>
                   ) : (
-                    <div className="absolute inset-0 bg-gradient-to-br from-purple-900 to-purple-700 opacity-80 rounded-xl"></div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-purple-900/70 to-purple-700/70 rounded-xl"></div>
                   )
                 }
               </button>
@@ -202,15 +200,15 @@ function VsBot() {
           {/* Reset button */}
           <button
             onClick={resetGame}
-            className="w-full py-2 bg-gradient-to-r from-purple-700 to-pink-700 hover:from-purple-600 hover:to-pink-600 rounded-full transition-all hover:shadow-lg hover:shadow-purple-500/30 hover:-translate-y-0.5"
+            className="w-full py-2 bg-gradient-to-r from-purple-700 to-pink-700 hover:from-purple-600 hover:to-pink-600 rounded-full transition-all hover:shadow-lg hover:shadow-purple-500/30 hover:-translate-y-0.5 mb-3"
           >
             Reset Game
           </button>
 
-          {/* Game over modal */}
+          {/* Game over modal with both options */}
           {gameOver && (
-            <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-20">
-              <div className="bg-gradient-to-br from-purple-900 to-gray-900 p-6 rounded-xl max-w-sm w-full border-2 border-purple-500 shadow-2xl">
+            <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-20 backdrop-blur-sm">
+              <div className="bg-gradient-to-br from-purple-900/90 to-gray-900/90 p-6 rounded-xl max-w-sm w-full border-2 border-purple-500/50 shadow-2xl backdrop-blur-md">
                 <h2 className="text-2xl font-bold mb-4 text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-pink-300">
                   {playerScore > botScore ? "🎉 You Won!" :
                     playerScore < botScore ? "🤖 Bot Won!" :
@@ -223,12 +221,20 @@ function VsBot() {
                     <div className="text-xl font-bold text-pink-100">Bot: {botScore}</div>
                   </div>
                 </div>
-                <button
-                  onClick={resetGame}
-                  className="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-full text-white font-bold transition-all hover:shadow-lg hover:shadow-purple-500/30 hover:-translate-y-0.5"
-                >
-                  Play Again
-                </button>
+                <div className="flex flex-col gap-3">
+                  <button
+                    onClick={resetGame}
+                    className="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-full text-white font-bold transition-all hover:shadow-lg hover:shadow-purple-500/30"
+                  >
+                    Play Again
+                  </button>
+                  <Link 
+                    to="/" 
+                    className="w-full py-3 bg-gray-700 hover:bg-gray-600 rounded-full text-white font-bold transition-all text-center"
+                  >
+                    Return to Home
+                  </Link>
+                </div>
               </div>
             </div>
           )}
