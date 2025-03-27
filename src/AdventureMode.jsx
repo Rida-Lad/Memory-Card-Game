@@ -202,7 +202,7 @@ const MemoryCardAdventure = () => {
         <div className="bg-gray-900 bg-opacity-80 rounded-xl p-4 sm:p-6 shadow-2xl backdrop-blur-md border border-gray-700 border-opacity-50">
           {/* Game Header */}
           <h1 className="text-3xl font-bold text-center mb-4 sm:mb-6 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500 animate-gradient-x">
-            Memory Card Adventure
+            Adventure Mode
           </h1>
           
           {/* Progress Bar */}
