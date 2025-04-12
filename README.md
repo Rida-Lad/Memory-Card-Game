@@ -10,6 +10,16 @@
 
 Cosmic Memory Game is an immersive, space-themed memory challenge that takes players on an intergalactic journey of mental agility and strategic thinking. Test your memory skills across multiple game modes while exploring a visually stunning cosmic landscape.
 
+## 📸 Screenshots
+
+<div align="center">
+  <img src="./public/screenshots/hero-section.png" width="45%" alt="Hero Section">
+  <img src="./public/screenshots/adventure.png" width="45%" alt="Adventure Mode">
+  <img src="./public/screenshots/vsBot.png" width="45%" alt="Vs Bot Mode" style="margin-top: 20px">
+  <img src="./public/screenshots/dailychallenge.png" width="45%" alt="Dailychallenge Mode" style="margin-top: 20px">
+</div>
+
+
 ## ✨ Features
 
 - 🎮 **3 Unique Game Modes**
